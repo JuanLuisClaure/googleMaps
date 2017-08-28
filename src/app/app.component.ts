@@ -29,7 +29,7 @@ export interface PageInterface {
   templateUrl: 'app.html'
 })
 export class MyApp {
-  rootPage:any = HomePage;
+  rootPage:any;
   map:any
 
     appPages: PageInterface[] = [
@@ -50,6 +50,7 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       let ele = document.getElementById('ojo')
       this.map = this.mapProvider.reaseguros(ele)
+      this.openPage(this.appPages[0])
       statusBar.styleDefault();
       splashScreen.hide();
     });

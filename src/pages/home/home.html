@@ -9,9 +9,9 @@
 <ion-content>
 
 
-  <div #googlemaps id="map" style="width:100%;height:100%;"></div>
+  <div #googlemapsPedidos  style="width:100%;height:100%;"></div>
 
-  <ion-fab [ngStyle]="{'left.px': x, 'top.px': y}" (panstart)="onPanStart($event)" (panmove)="onPan($event)" (panend)="ondrop($event)">
+  <!-- <ion-fab [ngStyle]="{'left.px': x, 'top.px': y}" (panstart)="onPanStart($event)" (panmove)="onPan($event)" (panend)="ondrop($event)">
     <button ion-fab color="primary" (click)="increible()"><ion-icon name="ios-call" ></ion-icon></button>
   </ion-fab>
   <ion-fab right top>
@@ -19,7 +19,7 @@
   </ion-fab>
   <ion-fab left top>
     <button ion-fab color="primary" (click)="verPedidos(index)"><ion-icon name="search"></ion-icon></button>
-  </ion-fab>
+  </ion-fab> -->
   <ion-fab right bottom>
     <button ion-fab color="primary" (click)="login()"><ion-icon name="search"></ion-icon>Login</button>
   </ion-fab>

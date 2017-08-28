@@ -1,5 +1,5 @@
 import { Component, ViewChild, Renderer2, ElementRef, Input, Output, NgZone  } from '@angular/core';
-import { NavController, AlertController, Platform } from 'ionic-angular';
+import { NavController, AlertController, Platform, NavParams } from 'ionic-angular';
 import { MapProvider } from '../../providers/map/map';
 import { DragProvider } from '../../providers/drag/drag';
 
@@ -17,13 +17,13 @@ import 'rxjs/add/operator/map';
 })
 export class HomePage {
 
-  @ViewChild('googlemaps') element: ElementRef;
-
+  @ViewChild('googlemapsPedidos') elem: ElementRef;
 
 
 
 
  map:any
+ mapa:any
  ele:any
  x: number = 300;
  y: number = 222;
@@ -41,6 +41,7 @@ export class HomePage {
  currentPosition: Observable<any>
   constructor( public  platform:Platform,
      public navCtrl: NavController,
+     public parametros: NavParams,
      public render: Renderer2,
      public mapProvider:MapProvider,
      public dragProvider: DragProvider,
@@ -48,20 +49,20 @@ export class HomePage {
   }
 
   ngOnInit(){
-
+    this.mapa = this.parametros.data.googleMap
   }
 
-//   ngAfterViewInit(){
-//     this.map = this.mapProvider.loadMap()
-//     this.mapProvider.getPosition().subscribe((res)=>{
-//           this.zone.run(()=>{
-//             this.latGps = res.coords.latitude
-//             this.lngGps = res.coords.longitude
-//           })
-//       })
-//     // this.element = document.getElementById('map')
-//     // this.currentPosition = this.mapProvider.getPosition()
-//   }
+  ngAfterViewInit(){
+    setTimeout(()=>{
+      if(this.mapa != null){
+        this.mapa.setDiv()
+        let ele = this.elem.nativeElement
+        this.map  = this.mapa.setDiv(ele)
+        console.log('Creando Pedidos-map')
+      }
+    }, 3000)
+
+  }
 //
 //   //NOTE
 //   //ca da funcion es un pasiot de luz
@@ -219,6 +220,14 @@ login(){
     this.x =  this.platform.width() - 51
     this.y =  this.y
   }
+
+  ngOnDestroy(){
+    if(this.mapa.getDiv()){
+      this.mapa.setDiv()
+      console.log('Quitando Pedidos-map')
+    }
+  }
+
 
 
 }

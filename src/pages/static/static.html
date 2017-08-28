@@ -16,6 +16,12 @@
 </ion-header>
 
 
-<ion-content padding>
-
+<ion-content>
+      <div #googlemapsTaxis  style="width:100%;height:100%;"></div>
+      <ion-fab right bottom>
+        <button ion-fab color="primary" (click)="y()"><ion-icon name="search"></ion-icon> < </button>
+      </ion-fab>
+      <ion-fab left bottom>
+        <button ion-fab color="primary" (click)="x()"><ion-icon name="search"></ion-icon> > </button>
+      </ion-fab>
 </ion-content>

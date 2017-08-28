@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, Renderer2, ElementRef } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 /**
@@ -15,11 +15,31 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class RidelistPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  @ViewChild('googlemapsCarreras') ele: ElementRef;
+  mapa:any
+  map:any
+
+  constructor(public navCtrl: NavController, public parametros: NavParams) {
+  }
+  ngOnInit(){
+    this.mapa = this.parametros.data.googleMap
+  }
+  ionViewDidLoad() {
+    setTimeout(()=>{
+      if(this.mapa != null){
+        this.mapa.setDiv()
+        let ele = this.ele.nativeElement
+        this.map  = this.mapa.setDiv(ele)
+        console.log('Creando Carreras-map')
+      }
+    }, 3000)
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad RidelistPage');
+  ngOnDestroy(){
+    if(this.mapa.getDiv()){
+      this.mapa.setDiv()
+      console.log('Quitando Carreras-map')
+    }
   }
 
 }

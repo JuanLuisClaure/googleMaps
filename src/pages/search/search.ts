@@ -57,14 +57,17 @@ export class SearchPage {
 
   ngAfterViewInit(){
 
-        if(this.mapa != null){
-          this.mapa.setDiv()
-          let ele = this.element.nativeElement
-          this.map = this.mapa.setDiv(ele)
-          console.log('Creando mapa')
-        }
-
+    setTimeout(()=>{
+      if(this.mapa != null){
+        this.mapa.setDiv()
+        let ele = this.element.nativeElement
+        this.map  = this.mapa.setDiv(ele)
         this.cargarMap()
+        console.log('Creando Delivery-map')
+      }
+    }, 3000)
+
+
   }
 
   cargarMap(){
@@ -126,7 +129,7 @@ export class SearchPage {
   ngOnDestroy(){
     if(this.mapa.getDiv()){
       this.mapa.setDiv()
-      console.log('Quitando Mapa')
+      console.log('Quitando Delivery-maps')
     }
   }
 
