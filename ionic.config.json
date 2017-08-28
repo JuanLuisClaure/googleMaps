@@ -1,0 +1,8 @@
+{
+  "name": "motos",
+  "app_id": "f34375d6",
+  "type": "ionic-angular",
+  "integrations": {
+    "cordova": {}
+  }
+}
