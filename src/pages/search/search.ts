@@ -1,5 +1,5 @@
 import { Component , ViewChild,  ElementRef, NgZone, Input} from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, LoadingController } from 'ionic-angular';
 import { MapProvider } from '../../providers/map/map';
 
 import { Observable } from 'rxjs/Rx';
@@ -37,7 +37,7 @@ export class SearchPage {
     //   },
     // ];
 
-  constructor(public navCtrl: NavController, public navParams: NavParams,public mapProvider: MapProvider,public zone: NgZone,public parametros: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams,public mapProvider: MapProvider,public zone: NgZone,public parametros: NavParams, public loadingCtrl: LoadingController) {
   }
 
 
@@ -56,12 +56,17 @@ export class SearchPage {
 
 
   ngAfterViewInit(){
+    let loading = this.loadingCtrl.create({
+      content: 'Cargando Mapa...'
+    })
+    loading.present();
 
     setTimeout(()=>{
       if(this.mapa != null){
         this.mapa.setDiv()
         let ele = this.element.nativeElement
-        this.map  = this.mapa.setDiv(ele)
+        this.mapa.setDiv(ele)
+        loading.dismiss();
         this.cargarMap()
         console.log('Creando Delivery-map')
       }
@@ -78,10 +83,10 @@ export class SearchPage {
        let mrk = this.mapProvider.createMark(locs, 'GPS', 'www/assets/icon/rocket.png')
        if(this.marker != null){
          this.marker.setPosition(locs)
-         this.map.moveCamera(opt)
+         this.mapa.moveCamera(opt)
        }else{
-         this.map.moveCamera(opt)
-         this.map.addMarker(mrk)
+         this.mapa.moveCamera(opt)
+         this.mapa.addMarker(mrk).then((mark)=>{ this.marker = mark; })
        }
      })
   }

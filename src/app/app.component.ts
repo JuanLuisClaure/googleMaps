@@ -10,6 +10,7 @@ import { SearchPage } from '../pages/search/search';
 
 
 import { MapProvider } from '../providers/map/map';
+import { DragProvider } from '../providers/drag/drag';
 
 export interface PageInterface {
   title: string;
@@ -30,7 +31,7 @@ export interface PageInterface {
 })
 export class MyApp {
   rootPage:any;
-  map:any
+  map:any;
 
     appPages: PageInterface[] = [
       {title: 'Pedidos-map', component: HomePage, index: 1, icon: 'map'},
@@ -44,13 +45,18 @@ export class MyApp {
 
 
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public mapProvider: MapProvider) {
+  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public mapProvider: MapProvider,public dragProvider: DragProvider) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       let ele = document.getElementById('ojo')
       this.map = this.mapProvider.reaseguros(ele)
-      this.openPage(this.appPages[0])
+
+      this.dragProvider.login().then((onResolve)=>{
+          console.log('logueado automatico')
+          this.openPage(this.appPages[0])
+      })
+
       statusBar.styleDefault();
       splashScreen.hide();
     });

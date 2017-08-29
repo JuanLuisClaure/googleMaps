@@ -1,5 +1,5 @@
 import { Component, ViewChild, Renderer2, ElementRef, Input, Output, NgZone  } from '@angular/core';
-import { NavController, AlertController, Platform, NavParams } from 'ionic-angular';
+import { NavController, AlertController, Platform, NavParams, LoadingController } from 'ionic-angular';
 import { MapProvider } from '../../providers/map/map';
 import { DragProvider } from '../../providers/drag/drag';
 
@@ -45,7 +45,8 @@ export class HomePage {
      public render: Renderer2,
      public mapProvider:MapProvider,
      public dragProvider: DragProvider,
-     public zone: NgZone) {
+     public zone: NgZone,
+     public loadingCtrl: LoadingController) {
   }
 
   ngOnInit(){
@@ -53,11 +54,18 @@ export class HomePage {
   }
 
   ngAfterViewInit(){
+
+    let loading = this.loadingCtrl.create({
+      content: 'Cargando Mapa...'
+    })
+    loading.present();
+
     setTimeout(()=>{
       if(this.mapa != null){
         this.mapa.setDiv()
         let ele = this.elem.nativeElement
-        this.map  = this.mapa.setDiv(ele)
+        this.mapa.setDiv(ele)
+        loading.dismiss();
         console.log('Creando Pedidos-map')
       }
     }, 3000)
@@ -111,9 +119,7 @@ export class HomePage {
 // }
 //
 login(){
-  this.dragProvider.login().then((onResolve)=>{
-      console.log(onResolve, 'logueado')
-  })
+
 }
 //
 // verTienda(){

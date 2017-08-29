@@ -20,9 +20,12 @@
 
     <div #googlemapsCarreras  style="width:100%;height:100%;"></div>
     <ion-fab right bottom>
-      <button ion-fab color="primary" (click)="y()"><ion-icon name="search"></ion-icon> < </button>
+      <button ion-fab color="primary" (click)="y(this.index)"><ion-icon name="arrow-dropright-circle"></ion-icon></button>
     </ion-fab>
     <ion-fab left bottom>
-      <button ion-fab color="primary" (click)="x()"><ion-icon name="search"></ion-icon> > </button>
+      <button ion-fab color="primary" (click)="x(this.index)"><ion-icon name="arrow-dropleft-circle"></ion-icon></button>
+    </ion-fab>
+    <ion-fab left top>
+      <button ion-fab color="primary" (click)="mostrarEnMapa()"><ion-icon name="arrow-dropleft-circle"></ion-icon></button>
     </ion-fab>
 </ion-content>

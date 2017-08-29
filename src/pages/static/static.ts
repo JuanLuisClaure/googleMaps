@@ -1,5 +1,5 @@
 import { Component, ViewChild, Renderer2, ElementRef } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, LoadingController } from 'ionic-angular';
 
 /**
  * Generated class for the StaticPage page.
@@ -16,20 +16,26 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 export class StaticPage {
 
   @ViewChild('googlemapsTaxis') lmnt: ElementRef;
-map:any
+
 mapa:any
 
-  constructor(public navCtrl: NavController, public parametros: NavParams) {
+  constructor(public navCtrl: NavController, public parametros: NavParams, public loadingCtrl: LoadingController) {
   }
   ngOnInit(){
     this.mapa = this.parametros.data.googleMap
   }
   ionViewDidLoad() {
+    let loading = this.loadingCtrl.create({
+      content: 'Cargando Mapa...'
+    })
+    loading.present();
+
     setTimeout(()=>{
       if(this.mapa != null){
         this.mapa.setDiv()
         let ele = this.lmnt.nativeElement
-        this.map  = this.mapa.setDiv(ele)
+        this.mapa.setDiv(ele)
+        loading.dismiss();
         console.log('Creando Staic-map')
       }
     }, 3000)
