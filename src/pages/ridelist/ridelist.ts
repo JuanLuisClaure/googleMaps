@@ -31,6 +31,7 @@ export class RidelistPage {
 
   @ViewChild('googlemapsCarreras') ele: ElementRef;
   mapa: any
+  inst:any
   index: number = 0
   orderShopPair: orderShopIterface[]
 
@@ -48,6 +49,7 @@ export class RidelistPage {
 
   ngOnInit() {
     this.mapa = this.parametros.data.googleMap
+    this.inst = this.parametros.data.instancia
   }
   ionViewDidLoad() {
     let loading = this.loadingCtrl.create({
@@ -119,7 +121,7 @@ export class RidelistPage {
 
                this.orderShopPair = [
                  {
-                   position:this.mapProvider.newlatlng(-lng, lat),
+                   position:this.mapProvider.newlatlng(lat, lng),
                    title: nameOrder,
                    icon: 'www/assets/icon/driver.png'
                  },
@@ -130,16 +132,20 @@ export class RidelistPage {
                 }
               ];
 
+              this.orderShopPair.forEach((m)=>{
+                let mrk  = this.mapProvider.createMark(m.position, m.title, m.icon)
+                this.mapa.addMarker(mrk).then(()=>{
+                  console.log('listo')
+                })
+              });
 
            })
   }
 
   mostrarEnMapa(){
-    this.orderShopPair.forEach((m)=>{
-      let mrk  = this.mapProvider.createMark(m.position, m.title, m.icon)
-      this.mapa.addMarker(mrk)
-    });
-    console.log('listo', this.orderShopPair)
+
+    let a = this.inst._spherical.computeDistanceBetween(this.orderShopPair[0].position, this.orderShopPair[1].position)
+    console.log(a)
     this.mapa.moveCamera({
         target: {lat: -17.7862, lng:  -63.18117},
         zoom: 13,
@@ -148,6 +154,7 @@ export class RidelistPage {
         duration: 5000,
         padding: 0  // default = 20px
       })
+
   }
 
 

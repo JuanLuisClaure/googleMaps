@@ -32,6 +32,7 @@ export interface PageInterface {
 export class MyApp {
   rootPage:any;
   map:any;
+  gmi:any
 
     appPages: PageInterface[] = [
       {title: 'Pedidos-map', component: HomePage, index: 1, icon: 'map'},
@@ -51,7 +52,7 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       let ele = document.getElementById('ojo')
       this.map = this.mapProvider.reaseguros(ele)
-
+      this.gmi = this.mapProvider.conseguir()
       this.dragProvider.login().then((onResolve)=>{
           console.log('logueado automatico')
           this.openPage(this.appPages[0])
@@ -69,7 +70,7 @@ export class MyApp {
   // we wouldn't want the back button to show in this scenario
 
   if (page.index) {
-    this.nav.setRoot(page.component, { tabIndex: page.index, googleMap: this.map });
+    this.nav.setRoot(page.component, { tabIndex: page.index, googleMap: this.map, instancia:this.gmi });
   } else {
     this.nav.setRoot(page.component).catch(() => {
       console.log("Didn't set nav root");

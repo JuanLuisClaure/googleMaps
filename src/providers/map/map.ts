@@ -34,10 +34,9 @@ public watch: any;
 
     //
     //
-  loadMap():GoogleMaps{
+  conseguir():GoogleMaps{
     let yes = this.map
     return yes
-
   }
 
  reaseguros(ele: HTMLElement){
