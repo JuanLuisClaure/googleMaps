@@ -11,9 +11,9 @@ import 'rxjs/add/operator/map';
 
 
 export interface orderShopIterface {
-    position:LatLng,
-    title:string,
-    icon:string
+  position: LatLng,
+  title: string,
+  icon: string
 }
 /**
  * Generated class for the RidelistPage page.
@@ -31,9 +31,9 @@ export class RidelistPage {
 
   @ViewChild('googlemapsCarreras') ele: ElementRef;
   mapa: any
-  inst:any
+  inst: any
   index: number = 0
-  marker:any
+  markers: Array<any> = []
   orderShopPair: orderShopIterface[]
 
 
@@ -78,6 +78,7 @@ export class RidelistPage {
 
 
   x() {
+
     this.dragProvider.getShopOrders(2, 'lermbkern').subscribe(val => {
       if (this.index < val.length && this.index >= 0) {
         let yes = val[this.index]
@@ -92,6 +93,7 @@ export class RidelistPage {
   }
 
   y() {
+
     this.dragProvider.getShopOrders(2, 'lermbkern').subscribe(val => {
       if (this.index < val.length && this.index >= 0) {
         let yes = val[this.index];
@@ -105,90 +107,91 @@ export class RidelistPage {
     })
   }
 
-  juntarOrdenShopMapa(order){
-            let lat  = order.latitude
-            let lng  = order.longitude
-            let nameOrder = order.name
-            let mapShop = this.dragProvider.db.object(`ShopMetas/${order.shop_key}`)
+  juntarOrdenShopMapa(order) {
+    let lat = order.latitude
+    let lng = order.longitude
+    let nameOrder = order.name
+    let mapShop = this.dragProvider.db.object(`ShopMetas/${order.shop_key}`)
 
-           Observable.combineLatest(mapShop).subscribe(val => {
-
-
-               let ae   = val[0].latitude
-               let ou   = val[0].longitude
-               let nameShop = val[0].name
-
-               this.orderShopPair = [
-                 {
-                   position:this.mapProvider.newlatlng(lat, lng),
-                   title: nameOrder,
-                   icon: 'www/assets/icon/driver.png'
-                 },
-                {
-                  position:this.mapProvider.newlatlng(ae, ou),
-                  title: nameShop,
-                  icon: 'www/assets/icon/restaurant.png'
-                }
-              ];
-
-                this.orderShopPair.forEach((m)=>{
-                  let mrk = this.mapProvider.createMark(m.position, m.title, m.icon)
-                  this.mapa.addMarker(mrk).then((mark)=>{
-                    console.log('listo')
-                    this.marker = mark
-                  })
-                });
+    Observable.combineLatest(mapShop).subscribe(val => {
 
 
+      let ae = val[0].latitude
+      let ou = val[0].longitude
+      let nameShop = val[0].name
 
-           })
-  }
+      this.orderShopPair = [
+        {
+          position: this.mapProvider.newlatlng(lat, lng),
+          title: nameOrder,
+          icon: 'www/assets/icon/driver.png'
+        },
+        {
+          position: this.mapProvider.newlatlng(ae, ou),
+          title: nameShop,
+          icon: 'www/assets/icon/restaurant.png'
+        }
+      ];
 
-  mostrarEnMapa(){
+      for (var i = 0; i < this.markers.length; i++) {
+        this.markers[i].setVisible(false)
+      }
+      this.markers = []
+      
 
-    let a = this.inst._spherical.computeDistanceBetween(this.orderShopPair[0].position, this.orderShopPair[1].position)
-    console.log(a)
-
-    this.mapa.addPolyline({
-         points: [this.orderShopPair[0].position, this.orderShopPair[1].position],
-        'color' : '#AA00FF',
-        'width': 10,
-        'geodesic': true
+      this.orderShopPair.map((m) => {
+        let mrk = this.mapProvider.createMark(m.position, m.title, m.icon)
+        this.mapa.addMarker(mrk).then((m) => {
+          this.markers.push(m)
+        })
       })
-    this.mapa.moveCamera({
-        target: {lat: -17.7862, lng:  -63.18117},
+
+      this.mapa.moveCamera({
+        target: this.mapProvider.newlatlng(ae, ou),
         zoom: 13,
         tilt: 60,
-        bearing: 140,
+        bearing: 0,
         duration: 5000,
         padding: 0  // default = 20px
       })
 
+      this.mapa.addPolyline({
+        points: [this.orderShopPair[0].position, this.orderShopPair[1].position],
+        'color': '#AA00FF',
+        'width': 10,
+        'geodesic': true
+      })
+
+
+      let a = this.inst._spherical.computeDistanceBetween(this.orderShopPair[0].position, this.orderShopPair[1].position)
+      console.log(a, 'distancia order')
+
+    })
   }
 
 
-  alertaPedidos(){
+  alertaPedidos() {
     let alert = this.alertCtrl.create({
-    title: 'No existen mas pedidos',
-    message: 'Comenzar de nuevo?',
-    buttons: [
-      {
-        role: 'cancel',
-        handler: () => {
-          this.index = 0
-          console.log('primer pedido');
+      title: 'No existen mas pedidos',
+      message: 'Comenzar de nuevo?',
+      buttons: [
+        {
+          role: 'cancel',
+          handler: () => {
+            this.index = 0
+            console.log('primer pedido');
+          }
+        },
+        {
+          text: 'Ok',
+          handler: () => {
+            this.index = 0
+            console.log('Primer pedido');
+          }
         }
-      },
-      {
-        text: 'Ok',
-        handler: () => {
-          this.index = 0
-          console.log('Primer pedido');
-        }
-      }
-    ]
-  });
-  alert.present();
+      ]
+    });
+    alert.present();
   }
 
 
