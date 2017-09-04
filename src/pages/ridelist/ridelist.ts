@@ -1,5 +1,5 @@
 import { Component, ViewChild, Renderer2, ElementRef } from '@angular/core';
-import { IonicPage, NavController, NavParams, LoadingController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, LoadingController, AlertController } from 'ionic-angular';
 import { LatLng } from '@ionic-native/google-maps';
 
 import { MapProvider } from '../../providers/map/map';
@@ -33,6 +33,7 @@ export class RidelistPage {
   mapa: any
   inst:any
   index: number = 0
+  marker:any
   orderShopPair: orderShopIterface[]
 
 
@@ -43,7 +44,8 @@ export class RidelistPage {
     public parametros: NavParams,
     public loadingCtrl: LoadingController,
     public mapProvider: MapProvider,
-    public dragProvider: DragProvider
+    public dragProvider: DragProvider,
+    public alertCtrl: AlertController
   ) {
   }
 
@@ -75,38 +77,35 @@ export class RidelistPage {
   }
 
 
-  x(i) {
+  x() {
     this.dragProvider.getShopOrders(2, 'lermbkern').subscribe(val => {
-
-      let yes = val[i];
-      if (this.index > 0) {
+      if (this.index < val.length && this.index >= 0) {
+        let yes = val[this.index]
         this.juntarOrdenShopMapa(yes)
+        console.log('se abrio un pedodo => ', this.index)
         this.index--
-        console.log('ahora index es ', this.index, ' osea el pedido es ', i)
       } else {
-        this.index = this.index
-        console.log('no existen mas pedidos', this.index)
+        this.alertaPedidos()
       }
 
     })
   }
 
-  y(i) {
+  y() {
     this.dragProvider.getShopOrders(2, 'lermbkern').subscribe(val => {
-      let yes = val[i];
-      if (this.index < val.length) {
+      if (this.index < val.length && this.index >= 0) {
+        let yes = val[this.index];
         this.juntarOrdenShopMapa(yes)
+        console.log('se abrio un pedodo => ', this.index)
         this.index++
-        console.log('ahora index es ', this.index, ' osea el pedido es ', i)
       } else {
-        this.index = this.index - 1
-        console.log('no existen mas pedidos', this.index)
+        this.alertaPedidos()
       }
 
     })
   }
 
-  juntarOrdenShopMapa(order) {
+  juntarOrdenShopMapa(order){
             let lat  = order.latitude
             let lng  = order.longitude
             let nameOrder = order.name
@@ -132,12 +131,15 @@ export class RidelistPage {
                 }
               ];
 
-              this.orderShopPair.forEach((m)=>{
-                let mrk  = this.mapProvider.createMark(m.position, m.title, m.icon)
-                this.mapa.addMarker(mrk).then(()=>{
-                  console.log('listo')
-                })
-              });
+                this.orderShopPair.forEach((m)=>{
+                  let mrk = this.mapProvider.createMark(m.position, m.title, m.icon)
+                  this.mapa.addMarker(mrk).then((mark)=>{
+                    console.log('listo')
+                    this.marker = mark
+                  })
+                });
+
+
 
            })
   }
@@ -146,6 +148,13 @@ export class RidelistPage {
 
     let a = this.inst._spherical.computeDistanceBetween(this.orderShopPair[0].position, this.orderShopPair[1].position)
     console.log(a)
+
+    this.mapa.addPolyline({
+         points: [this.orderShopPair[0].position, this.orderShopPair[1].position],
+        'color' : '#AA00FF',
+        'width': 10,
+        'geodesic': true
+      })
     this.mapa.moveCamera({
         target: {lat: -17.7862, lng:  -63.18117},
         zoom: 13,
@@ -155,6 +164,31 @@ export class RidelistPage {
         padding: 0  // default = 20px
       })
 
+  }
+
+
+  alertaPedidos(){
+    let alert = this.alertCtrl.create({
+    title: 'No existen mas pedidos',
+    message: 'Comenzar de nuevo?',
+    buttons: [
+      {
+        role: 'cancel',
+        handler: () => {
+          this.index = 0
+          console.log('primer pedido');
+        }
+      },
+      {
+        text: 'Ok',
+        handler: () => {
+          this.index = 0
+          console.log('Primer pedido');
+        }
+      }
+    ]
+  });
+  alert.present();
   }
 
 
